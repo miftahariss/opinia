@@ -2,14 +2,14 @@
 
 ## Technology
 
-- **Laravel**
+- **Codeigniter 4**
 - **MySQL**
 
 ## Installation
 
 Server Requirements
 
-- `PHP >= 7.2`
+- `PHP >= 7.4`
 - `OpenSSL PHP Extension`
 - `PDO PHP Extension`
 - `Mbstring PHP Extension`
@@ -19,19 +19,19 @@ Install all the dependencies using composer
 
     composer install
 
-Copy the example env file and make the required configuration changes in the .env file
+Copy the env file and make the required configuration changes in the .env file
 
-    cp .env.example .env
+    cp env .env
 
 Run the database migrations (**Create your MySQL database and set the database connection in .env file before migrating**)
 
-    php artisan migrate
+    php spark migrate
 
 Serving The Application
 
-	php -S localhost:8000 -t public
+	php spark serve
 
-You can now access the server at http://localhost:8000
+You can now access the server at http://localhost:8080
 
 ## Usage
 
@@ -40,20 +40,18 @@ You can now access the server at http://localhost:8000
 ### Request
 
 ```http
-POST /register form-data
+POST /register data-raw
 ```
 
-Attribute:
-- `nik` **required** | **integer**
-- `name` **required** | **string**
-- `gender` **required** | **string**
-- `phone` **required** | **integer**
-- `birthday` **required** | **string**
-- `address` **required** | **string**
-- `salary` **required** | **integer**
-- `email` **required** | **string**
-- `password` **required** | **string**
-- `image` **required** | **file** (choose option "file" in postman)
+```json
+{
+    "fullname" : "Miftah Aris Setiawan",
+    "phone" : "089658155683",
+    "email" : "miftahariss15@gmail.com",
+    "password" : "123456",
+    "confpassword" : "123456"
+}
+```
 
 ### Response
 
@@ -62,8 +60,8 @@ Status 200
 Content-Type: application/json
 
 {
-    "code": "200",
-    "message": "User Miftah Aris Setiawan (12345678) successfully registered!"
+    "code": 200,
+    "message": "User Successfully registered!"
 }
 ```
 
@@ -72,12 +70,18 @@ Content-Type: application/json
 ### Request
 
 ```http
-POST /login form-data
+POST /login data-raw
 ```
 
-Attribute:
-- `email` **required** | **string**
-- `password` **required** | **string**
+```json
+{
+    "fullname" : "Miftah Aris Setiawan",
+    "phone" : "089658155683",
+    "email" : "miftahariss15@gmail.com",
+    "password" : "123456",
+    "confpassword" : "123456"
+}
+```
 
 ### Response
 
@@ -86,20 +90,24 @@ Status 200
 Content-Type: application/json
 
 {
-    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmYW1pbHltYXJ0LWp3dCIsInN1YiI6MiwiaWF0IjoxNTk0NzU0MDUyLCJleHAiOjE1OTQ3NTc2NTJ9.2aP2Ihatktp70CBxa4IZRwHmyhH2U_aTLFunnGejdI4"
+    "code": 200,
+    "message": "User Successfully login!",
+    "data": {
+        "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpYXQiOjE2NTQ4NjM2NTcsInVpZCI6IjIiLCJlbWFpbCI6Im1pZnRhaGFyaXNzMTVAZ21haWwuY29tIn0.iJt-2VFCKZj0BmmEi-hhtCWiVZ3HVwirEjv6Jis6J1g"
+    }
 }
 ```
 
-## Employee List
+## CRUD POSTINGAN
 
 #### Request
 
 ```http
-GET /users
+GET /postingan
 ```
 
-Params:
-- `token` **required** | **you can get the token from /login response**
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
 
 ### Response
 
@@ -107,84 +115,272 @@ Params:
 Status 200
 Content-Type: application/json
 
-[
-    {
-        "nik": 444444,
-        "name": "Emma Setyaningrum",
-        "gender": "female",
-        "phone": "2233232",
-        "birthday": "1992-05-20",
-        "address": "parung",
-        "salary": 3000000,
-        "email": "emmasetyaningrum20@gmail.com",
-        "image": "http://localhost:8000/image_user/H5kiBOj6R52LOIN8rSeuLIKG5FRYjsAkm2.jpg"
-    },
-    {
-        "nik": 12345678,
-        "name": "Miftah Aris Setiawan",
-        "gender": "male",
-        "phone": "089658155683",
-        "birthday": "1991-06-15",
-        "address": "pamulang",
-        "salary": 2500000,
-        "email": "miftahariss15@gmail.com",
-        "image": "http://localhost:8000/image_user/0XQeYBbWvxZZH0HlJ5vs2A5QUHppf0LmNP.jpg"
-    }
-]
+{
+    "code": 200,
+    "message": "Postingan found!",
+    "data": [
+        {
+            "id": "5",
+            "title": "Bismillah",
+            "description": "ismillah",
+            "post_type": {
+                "jenis": "Esai",
+                "post_type": "Artikel"
+            },
+            "user": {
+                "fullname": "Miftah Aris Setiawan",
+                "phone": "089658155683",
+                "email": "miftahariss15@gmail.com"
+            },
+            "status": "1",
+            "created_date": "2022-06-10 18:38:01",
+            "updated_date": "2022-06-10 18:38:01"
+        },
+        {
+            "id": "3",
+            "title": "Abi",
+            "description": "Bia",
+            "post_type": {
+                "jenis": "Opini",
+                "post_type": "Artikel"
+            },
+            "user": {
+                "fullname": "Aris Aja",
+                "phone": "089658155683",
+                "email": "miftahariss@gmail.com"
+            },
+            "status": "1",
+            "created_date": "2022-06-10 18:14:30",
+            "updated_date": "2022-06-10 18:35:01"
+        }
+    ]
+}
 ```
-
-## Absen
 
 ### Request
 
 ```http
-POST /absen form-data
+POST /postingan/create data-raw
 ```
 
-Params:
-- `token` **required** | **you can get the token from /login response**
-
-Attribute:
-- `type` (e.g. "in", "out") **required** | **string**
-- `latitude` **required** | **string**
-- `longitude` **required** | **string**
-
-### Response with type `in`
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
 
 ```json
-Status 200
-Content-Type: application/json
-
 {
-    "code": "200",
-    "message": "User Miftah Aris Setiawan (12345678) successfully in",
-    "date": "2020-07-15",
-    "time": "02:14:43",
-    "coordinates": {
-        "latitude": "-6.3095902",
-        "longitude": "106.7336749",
-        "place": "Home, 1, Jalan Kavling Keuangan, Tangerang Selatan, Kedaung, Pamulang, Banten, 15411, Indonesia",
-        "country": "Indonesia"
-    }
+    "title" : "Bismillah",
+    "description" : "ismillah",
+    "post_type_id" : "7"
 }
 ```
 
-### Response with type `out`
+### Response
 
 ```json
 Status 200
 Content-Type: application/json
 
 {
-    "code": "200",
-    "message": "User Miftah Aris Setiawan (12345678) successfully out",
-    "date": "2020-07-15",
-    "time": "02:42:01",
-    "coordinates": {
-        "latitude": "-6.2038167",
-        "longitude": "106.8031553",
-        "place": "FamilyMart, Jalan Pejompongan V, RW 05, Daerah Khusus Ibukota Jakarta, Bendungan Hilir, Tanah Abang, Jakarta Pusat, 17431, Indonesia",
-        "country": "Indonesia"
-    }
+    "code": 200,
+    "message": "Postingan Successfully created!"
+}
+```
+
+### Request
+
+```http
+POST /postingan/update data-raw
+```
+
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
+
+```json
+{
+    "id" : "3",
+    "title" : "Abi",
+    "description" : "Bia",
+    "post_type_id" : "3"
+}
+```
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": 200,
+    "message": "Postingan Successfully updated!"
+}
+```
+
+### Request
+
+```http
+POST /postingan/delete data-raw
+```
+
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
+
+```json
+{
+    "id" : "3"
+}
+```
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": 200,
+    "message": "Postingan Successfully deleted!"
+}
+```
+
+
+## CRUD POST TYPE
+
+#### Request
+
+```http
+GET /post_type
+```
+
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": 200,
+    "message": "Post Type found!",
+    "data": [
+        {
+            "id": "3",
+            "jenis": "Opini",
+            "post_type": "Artikel",
+            "status": "1",
+            "created_date": "2022-06-10 17:36:43",
+            "updated_date": "2022-06-10 18:27:10"
+        },
+        {
+            "id": "4",
+            "jenis": "Cerpen",
+            "post_type": "Artikel",
+            "status": "1",
+            "created_date": "2022-06-10 17:37:04",
+            "updated_date": "2022-06-10 17:37:04"
+        },
+        {
+            "id": "5",
+            "jenis": "Idea",
+            "post_type": "Idea",
+            "status": "1",
+            "created_date": "2022-06-10 17:37:19",
+            "updated_date": "2022-06-10 17:37:19"
+        },
+        {
+            "id": "6",
+            "jenis": "Esai",
+            "post_type": "Artikel",
+            "status": "1",
+            "created_date": "2022-06-10 17:37:38",
+            "updated_date": "2022-06-10 17:37:38"
+        }
+    ]
+}
+```
+
+### Request
+
+```http
+POST /post_type/create data-raw
+```
+
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
+
+```json
+{
+    "jenis" : "Esai",
+    "type" : "Artikel"
+}
+```
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": 200,
+    "message": "Post Type Successfully created!"
+}
+```
+
+### Request
+
+```http
+POST /post_type/update data-raw
+```
+
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
+
+```json
+{
+    "id" : "3",
+    "jenis" : "Opini",
+    "type" : "Artikel"
+}
+```
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": 200,
+    "message": "Post Type Successfully updated!"
+}
+```
+
+### Request
+
+```http
+POST /post_type/delete data-raw
+```
+
+Header Authorization Bearer:
+- `Authorization` **required** | **you can get the token from /login response for Authorization**
+
+```json
+{
+    "id" : "7"
+}
+```
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": 200,
+    "message": "Post Type Successfully deleted!"
 }
 ```
