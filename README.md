@@ -1,63 +1,190 @@
-# CodeIgniter 4 Application Starter
+# Getting started
 
-## What is CodeIgniter?
+## Technology
 
-CodeIgniter is a PHP full-stack web framework that is light, fast, flexible and secure.
-More information can be found at the [official site](http://codeigniter.com).
+- **Laravel**
+- **MySQL**
 
-This repository holds a composer-installable app starter.
-It has been built from the
-[development repository](https://github.com/codeigniter4/CodeIgniter4).
+## Installation
 
-More information about the plans for version 4 can be found in [the announcement](http://forum.codeigniter.com/thread-62615.html) on the forums.
+Server Requirements
 
-The user guide corresponding to this version of the framework can be found
-[here](https://codeigniter4.github.io/userguide/).
+- `PHP >= 7.2`
+- `OpenSSL PHP Extension`
+- `PDO PHP Extension`
+- `Mbstring PHP Extension`
+- `Composer`
 
-## Installation & updates
+Install all the dependencies using composer
 
-`composer create-project codeigniter4/appstarter` then `composer update` whenever
-there is a new release of the framework.
+    composer install
 
-When updating, check the release notes to see if there are any changes you might need to apply
-to your `app` folder. The affected files can be copied or merged from
-`vendor/codeigniter4/framework/app`.
+Copy the example env file and make the required configuration changes in the .env file
 
-## Setup
+    cp .env.example .env
 
-Copy `env` to `.env` and tailor for your app, specifically the baseURL
-and any database settings.
+Run the database migrations (**Create your MySQL database and set the database connection in .env file before migrating**)
 
-## Important Change with index.php
+    php artisan migrate
 
-`index.php` is no longer in the root of the project! It has been moved inside the *public* folder,
-for better security and separation of components.
+Serving The Application
 
-This means that you should configure your web server to "point" to your project's *public* folder, and
-not to the project root. A better practice would be to configure a virtual host to point there. A poor practice would be to point your web server to the project root and expect to enter *public/...*, as the rest of your logic and the
-framework are exposed.
+	php -S localhost:8000 -t public
 
-**Please** read the user guide for a better explanation of how CI4 works!
+You can now access the server at http://localhost:8000
 
-## Repository Management
+## Usage
 
-We use GitHub issues, in our main repository, to track **BUGS** and to track approved **DEVELOPMENT** work packages.
-We use our [forum](http://forum.codeigniter.com) to provide SUPPORT and to discuss
-FEATURE REQUESTS.
+## Register
 
-This repository is a "distribution" one, built by our release preparation script.
-Problems with it can be raised on our forum, or as issues in the main repository.
+### Request
 
-## Server Requirements
+```http
+POST /register form-data
+```
 
-PHP version 7.4 or higher is required, with the following extensions installed:
+Attribute:
+- `nik` **required** | **integer**
+- `name` **required** | **string**
+- `gender` **required** | **string**
+- `phone` **required** | **integer**
+- `birthday` **required** | **string**
+- `address` **required** | **string**
+- `salary` **required** | **integer**
+- `email` **required** | **string**
+- `password` **required** | **string**
+- `image` **required** | **file** (choose option "file" in postman)
 
-- [intl](http://php.net/manual/en/intl.requirements.php)
-- [libcurl](http://php.net/manual/en/curl.requirements.php) if you plan to use the HTTP\CURLRequest library
+### Response
 
-Additionally, make sure that the following extensions are enabled in your PHP:
+```json
+Status 200
+Content-Type: application/json
 
-- json (enabled by default - don't turn it off)
-- [mbstring](http://php.net/manual/en/mbstring.installation.php)
-- [mysqlnd](http://php.net/manual/en/mysqlnd.install.php)
-- xml (enabled by default - don't turn it off)
+{
+    "code": "200",
+    "message": "User Miftah Aris Setiawan (12345678) successfully registered!"
+}
+```
+
+## Login
+
+### Request
+
+```http
+POST /login form-data
+```
+
+Attribute:
+- `email` **required** | **string**
+- `password` **required** | **string**
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpc3MiOiJmYW1pbHltYXJ0LWp3dCIsInN1YiI6MiwiaWF0IjoxNTk0NzU0MDUyLCJleHAiOjE1OTQ3NTc2NTJ9.2aP2Ihatktp70CBxa4IZRwHmyhH2U_aTLFunnGejdI4"
+}
+```
+
+## Employee List
+
+#### Request
+
+```http
+GET /users
+```
+
+Params:
+- `token` **required** | **you can get the token from /login response**
+
+### Response
+
+```json
+Status 200
+Content-Type: application/json
+
+[
+    {
+        "nik": 444444,
+        "name": "Emma Setyaningrum",
+        "gender": "female",
+        "phone": "2233232",
+        "birthday": "1992-05-20",
+        "address": "parung",
+        "salary": 3000000,
+        "email": "emmasetyaningrum20@gmail.com",
+        "image": "http://localhost:8000/image_user/H5kiBOj6R52LOIN8rSeuLIKG5FRYjsAkm2.jpg"
+    },
+    {
+        "nik": 12345678,
+        "name": "Miftah Aris Setiawan",
+        "gender": "male",
+        "phone": "089658155683",
+        "birthday": "1991-06-15",
+        "address": "pamulang",
+        "salary": 2500000,
+        "email": "miftahariss15@gmail.com",
+        "image": "http://localhost:8000/image_user/0XQeYBbWvxZZH0HlJ5vs2A5QUHppf0LmNP.jpg"
+    }
+]
+```
+
+## Absen
+
+### Request
+
+```http
+POST /absen form-data
+```
+
+Params:
+- `token` **required** | **you can get the token from /login response**
+
+Attribute:
+- `type` (e.g. "in", "out") **required** | **string**
+- `latitude` **required** | **string**
+- `longitude` **required** | **string**
+
+### Response with type `in`
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": "200",
+    "message": "User Miftah Aris Setiawan (12345678) successfully in",
+    "date": "2020-07-15",
+    "time": "02:14:43",
+    "coordinates": {
+        "latitude": "-6.3095902",
+        "longitude": "106.7336749",
+        "place": "Home, 1, Jalan Kavling Keuangan, Tangerang Selatan, Kedaung, Pamulang, Banten, 15411, Indonesia",
+        "country": "Indonesia"
+    }
+}
+```
+
+### Response with type `out`
+
+```json
+Status 200
+Content-Type: application/json
+
+{
+    "code": "200",
+    "message": "User Miftah Aris Setiawan (12345678) successfully out",
+    "date": "2020-07-15",
+    "time": "02:42:01",
+    "coordinates": {
+        "latitude": "-6.2038167",
+        "longitude": "106.8031553",
+        "place": "FamilyMart, Jalan Pejompongan V, RW 05, Daerah Khusus Ibukota Jakarta, Bendungan Hilir, Tanah Abang, Jakarta Pusat, 17431, Indonesia",
+        "country": "Indonesia"
+    }
+}
+```
